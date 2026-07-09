@@ -11,7 +11,7 @@ import Badge from './ui/Badge'
 import Modal from './ui/Modal'
 import ConfirmDialog from './ui/ConfirmDialog'
 import EmptyState from './ui/EmptyState'
-import { Calendar, Clock, Users, UtensilsCrossed, LogOut, Plus, X, CalendarX } from 'lucide-react'
+import { Calendar, Clock, Users, UtensilsCrossed, LogOut, Plus, X, CalendarX, TrendingUp, CheckCircle, XCircle } from 'lucide-react'
 
 const CustomerDashboard = () => {
   const [reservations, setReservations] = useState([])
@@ -160,6 +160,66 @@ const CustomerDashboard = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+        >
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-primary-100 p-3 rounded-lg">
+                <Calendar className="h-5 w-5 text-primary-600" />
+              </div>
+              <span className="text-xs text-slate-500">Total</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">{reservations.length}</div>
+            <div className="text-sm text-slate-600">Total Reservations</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-success-100 p-3 rounded-lg">
+                <CheckCircle className="h-5 w-5 text-success-600" />
+              </div>
+              <span className="text-xs text-slate-500">Active</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {reservations.filter(r => r.status === 'confirmed').length}
+            </div>
+            <div className="text-sm text-slate-600">Confirmed</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-error-100 p-3 rounded-lg">
+                <XCircle className="h-5 w-5 text-error-600" />
+              </div>
+              <span className="text-xs text-slate-500">Cancelled</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {reservations.filter(r => r.status === 'cancelled').length}
+            </div>
+            <div className="text-sm text-slate-600">Cancelled</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-warning-100 p-3 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-warning-600" />
+              </div>
+              <span className="text-xs text-slate-500">Today</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {reservations.filter(r => {
+                const today = new Date().toDateString()
+                return new Date(r.date).toDateString() === today
+              }).length}
+            </div>
+            <div className="text-sm text-slate-600">Today's Reservations</div>
+          </Card>
+        </motion.div>
+
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">My Reservations</h2>

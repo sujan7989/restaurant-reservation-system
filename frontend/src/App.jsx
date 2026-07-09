@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { motion, AnimatePresence } from 'framer-motion'
+import LandingPage from './components/LandingPage'
 import Login from './components/Login'
 import Register from './components/Register'
 import CustomerDashboard from './components/CustomerDashboard'
@@ -110,7 +111,18 @@ function App() {
                     </ProtectedRoute>
                   } 
                 />
-                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/" element={
+                  <motion.div
+                    key="landing"
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={pageTransition}
+                  >
+                    <LandingPage />
+                  </motion.div>
+                } />
               </Routes>
             </AnimatePresence>
           </div>

@@ -10,7 +10,7 @@ import Input from './ui/Input'
 import Badge from './ui/Badge'
 import ConfirmDialog from './ui/ConfirmDialog'
 import EmptyState from './ui/EmptyState'
-import { Calendar, Clock, Users, UtensilsCrossed, LogOut, Plus, Table as TableIcon, X, Filter, CalendarX } from 'lucide-react'
+import { Calendar, Clock, Users, UtensilsCrossed, LogOut, Plus, Table as TableIcon, X, Filter, CalendarX, TrendingUp, CheckCircle, XCircle } from 'lucide-react'
 
 const AdminDashboard = () => {
   const [reservations, setReservations] = useState([])
@@ -251,6 +251,64 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+        >
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-primary-100 p-3 rounded-lg">
+                <TableIcon className="h-5 w-5 text-primary-600" />
+              </div>
+              <span className="text-xs text-slate-500">Total</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">{tables.length}</div>
+            <div className="text-sm text-slate-600">Total Tables</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-primary-100 p-3 rounded-lg">
+                <Calendar className="h-5 w-5 text-primary-600" />
+              </div>
+              <span className="text-xs text-slate-500">Total</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">{reservations.length}</div>
+            <div className="text-sm text-slate-600">Total Reservations</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-success-100 p-3 rounded-lg">
+                <CheckCircle className="h-5 w-5 text-success-600" />
+              </div>
+              <span className="text-xs text-slate-500">Active</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {reservations.filter(r => r.status === 'confirmed').length}
+            </div>
+            <div className="text-sm text-slate-600">Confirmed</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-warning-100 p-3 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-warning-600" />
+              </div>
+              <span className="text-xs text-slate-500">Today</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {reservations.filter(r => {
+                const today = new Date().toDateString()
+                return new Date(r.date).toDateString() === today
+              }).length}
+            </div>
+            <div className="text-sm text-slate-600">Today's Reservations</div>
+          </Card>
+        </motion.div>
+
         {/* Tab Navigation */}
         <div className="flex gap-2 mb-8">
           <Button
