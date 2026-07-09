@@ -10,7 +10,7 @@ import Input from './ui/Input'
 import Badge from './ui/Badge'
 import ConfirmDialog from './ui/ConfirmDialog'
 import EmptyState from './ui/EmptyState'
-import { Calendar, Clock, Users, UtensilsCrossed, LogOut, Plus, Table as TableIcon, X, Filter, CalendarX, TrendingUp, CheckCircle, XCircle } from 'lucide-react'
+import { Calendar, Clock, Users, UtensilsCrossed, LogOut, Plus, Table as TableIcon, X, Filter, CalendarX, TrendingUp, CheckCircle, XCircle, Search } from 'lucide-react'
 
 const AdminDashboard = () => {
   const [reservations, setReservations] = useState([])
@@ -21,6 +21,8 @@ const AdminDashboard = () => {
   const [editingReservation, setEditingReservation] = useState(null)
   const [editingTable, setEditingTable] = useState(null)
   const [filterDate, setFilterDate] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [loading, setLoading] = useState(false)
   const [confirmCancel, setConfirmCancel] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(null)
@@ -260,17 +262,6 @@ const AdminDashboard = () => {
           <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
             <div className="flex items-center justify-between mb-2">
               <div className="bg-primary-100 p-3 rounded-lg">
-                <TableIcon className="h-5 w-5 text-primary-600" />
-              </div>
-              <span className="text-xs text-slate-500">Total</span>
-            </div>
-            <div className="text-2xl font-bold text-slate-900">{tables.length}</div>
-            <div className="text-sm text-slate-600">Total Tables</div>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
-            <div className="flex items-center justify-between mb-2">
-              <div className="bg-primary-100 p-3 rounded-lg">
                 <Calendar className="h-5 w-5 text-primary-600" />
               </div>
               <span className="text-xs text-slate-500">Total</span>
@@ -281,21 +272,8 @@ const AdminDashboard = () => {
 
           <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
             <div className="flex items-center justify-between mb-2">
-              <div className="bg-success-100 p-3 rounded-lg">
-                <CheckCircle className="h-5 w-5 text-success-600" />
-              </div>
-              <span className="text-xs text-slate-500">Active</span>
-            </div>
-            <div className="text-2xl font-bold text-slate-900">
-              {reservations.filter(r => r.status === 'confirmed').length}
-            </div>
-            <div className="text-sm text-slate-600">Confirmed</div>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
-            <div className="flex items-center justify-between mb-2">
               <div className="bg-warning-100 p-3 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-warning-600" />
+                <Clock className="h-5 w-5 text-warning-600" />
               </div>
               <span className="text-xs text-slate-500">Today</span>
             </div>
@@ -306,6 +284,33 @@ const AdminDashboard = () => {
               }).length}
             </div>
             <div className="text-sm text-slate-600">Today's Reservations</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-primary-100 p-3 rounded-lg">
+                <TableIcon className="h-5 w-5 text-primary-600" />
+              </div>
+              <span className="text-xs text-slate-500">Active</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">{tables.length}</div>
+            <div className="text-sm text-slate-600">Active Tables</div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="bg-success-100 p-3 rounded-lg">
+                <CheckCircle className="h-5 w-5 text-success-600" />
+              </div>
+              <span className="text-xs text-slate-500">Available</span>
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {tables.length - reservations.filter(r => {
+                const today = new Date().toDateString()
+                return new Date(r.date).toDateString() === today && r.status === 'confirmed'
+              }).length}
+            </div>
+            <div className="text-sm text-slate-600">Available Tables</div>
           </Card>
         </motion.div>
 
@@ -342,7 +347,29 @@ const AdminDashboard = () => {
                 </div>
                 <div className="flex gap-3 w-full sm:w-auto">
                   <div className="relative flex-1 sm:flex-none">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search by email..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="relative flex-1 sm:flex-none">
                     <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div className="relative flex-1 sm:flex-none">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <input
                       type="date"
                       value={filterDate}
@@ -352,7 +379,7 @@ const AdminDashboard = () => {
                   </div>
                   <Button onClick={() => setShowReservationForm(!showReservationForm)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    {showReservationForm ? 'Cancel' : 'New Reservation'}
+                    {showReservationForm ? 'Cancel' : 'New'}
                   </Button>
                 </div>
               </div>
@@ -470,15 +497,25 @@ const AdminDashboard = () => {
                     </div>
                   ))}
                 </div>
-              ) : reservations.length === 0 ? (
+              ) : reservations.filter(r => {
+                const matchesSearch = searchQuery === '' || r.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())
+                const matchesStatus = statusFilter === 'all' || r.status === statusFilter
+                return matchesSearch && matchesStatus
+              }).length === 0 ? (
                 <EmptyState
                   icon="reservations"
                   title="No reservations found"
-                  description={filterDate ? 'No reservations for the selected date.' : 'No reservations in the system yet.'}
+                  description="No reservations match your current filters."
                 />
               ) : (
                 <div className="grid gap-4">
-                  {reservations.map((reservation, index) => (
+                  {reservations
+                    .filter(r => {
+                      const matchesSearch = searchQuery === '' || r.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())
+                      const matchesStatus = statusFilter === 'all' || r.status === statusFilter
+                      return matchesSearch && matchesStatus
+                    })
+                    .map((reservation, index) => (
                     <motion.div
                       key={reservation._id}
                       initial={{ opacity: 0, y: 20 }}

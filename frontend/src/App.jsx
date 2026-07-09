@@ -8,6 +8,8 @@ import Login from './components/Login'
 import Register from './components/Register'
 import CustomerDashboard from './components/CustomerDashboard'
 import AdminDashboard from './components/AdminDashboard'
+import NotFound from './components/NotFound'
+import Unauthorized from './components/Unauthorized'
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -39,7 +41,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   }
 
   if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to={user.role === 'admin' ? '/admin' : '/dashboard'} />
+    return <Unauthorized />
   }
 
   return children
@@ -121,6 +123,18 @@ function App() {
                     transition={pageTransition}
                   >
                     <LandingPage />
+                  </motion.div>
+                } />
+                <Route path="*" element={
+                  <motion.div
+                    key="notfound"
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={pageTransition}
+                  >
+                    <NotFound />
                   </motion.div>
                 } />
               </Routes>

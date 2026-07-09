@@ -174,7 +174,7 @@ const CustomerDashboard = () => {
               <span className="text-xs text-slate-500">Total</span>
             </div>
             <div className="text-2xl font-bold text-slate-900">{reservations.length}</div>
-            <div className="text-sm text-slate-600">Total Reservations</div>
+            <div className="text-sm text-slate-600">My Reservations</div>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
@@ -182,12 +182,14 @@ const CustomerDashboard = () => {
               <div className="bg-success-100 p-3 rounded-lg">
                 <CheckCircle className="h-5 w-5 text-success-600" />
               </div>
-              <span className="text-xs text-slate-500">Active</span>
+              <span className="text-xs text-slate-500">Upcoming</span>
             </div>
             <div className="text-2xl font-bold text-slate-900">
-              {reservations.filter(r => r.status === 'confirmed').length}
+              {reservations.filter(r => {
+                return r.status === 'confirmed' && new Date(r.date) >= new Date()
+              }).length}
             </div>
-            <div className="text-sm text-slate-600">Confirmed</div>
+            <div className="text-sm text-slate-600">Upcoming Reservations</div>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
@@ -200,13 +202,13 @@ const CustomerDashboard = () => {
             <div className="text-2xl font-bold text-slate-900">
               {reservations.filter(r => r.status === 'cancelled').length}
             </div>
-            <div className="text-sm text-slate-600">Cancelled</div>
+            <div className="text-sm text-slate-600">Cancelled Reservations</div>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow duration-300">
             <div className="flex items-center justify-between mb-2">
               <div className="bg-warning-100 p-3 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-warning-600" />
+                <Clock className="h-5 w-5 text-warning-600" />
               </div>
               <span className="text-xs text-slate-500">Today</span>
             </div>
