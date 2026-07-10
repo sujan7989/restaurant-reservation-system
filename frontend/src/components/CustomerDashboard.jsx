@@ -68,12 +68,14 @@ const CustomerDashboard = () => {
           numberOfGuests: formData.numberOfGuests
         }
       })
-      setAvailableTables(response.data.availableTables)
-      if (response.data.availableTables.length === 0) {
+      setAvailableTables(response.data.availableTables || [])
+      if ((response.data.availableTables || []).length === 0) {
         addToast('No tables available for the selected date and time', 'warning')
       }
     } catch (err) {
+      console.error('Check availability error:', err)
       addToast('Failed to check availability', 'error')
+      setAvailableTables([])
     } finally {
       setCheckingAvailability(false)
     }
@@ -295,7 +297,7 @@ const CustomerDashboard = () => {
                     <Calendar className="h-4 w-4 mr-2" />
                     Check Availability
                   </Button>
-                  {availableTables.length > 0 && (
+                  {availableTables && availableTables.length > 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
