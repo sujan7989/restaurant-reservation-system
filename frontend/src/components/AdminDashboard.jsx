@@ -94,10 +94,16 @@ const AdminDashboard = () => {
 
   const handleUpdateReservation = async (e) => {
     e.preventDefault()
+    
+    if (!reservationForm.tableId) {
+      addToast('Please select a table', 'warning')
+      return
+    }
+    
     setLoading(true)
 
     try {
-      await api.put(`/reservations/${editingReservation._id}`, reservationForm)
+      await api.put(`/reservations/${editingReservation?._id}`, reservationForm)
       addToast('Reservation updated successfully!', 'success')
       setEditingReservation(null)
       setShowReservationForm(false)
@@ -133,10 +139,10 @@ const AdminDashboard = () => {
   const handleEditReservation = (reservation) => {
     setEditingReservation(reservation)
     setReservationForm({
-      tableId: reservation.table._id,
-      date: reservation.date.split('T')[0],
-      timeSlot: reservation.timeSlot,
-      numberOfGuests: reservation.numberOfGuests
+      tableId: reservation.table?._id || '',
+      date: reservation.date ? reservation.date.split('T')[0] : '',
+      timeSlot: reservation.timeSlot || '',
+      numberOfGuests: reservation.numberOfGuests || 1
     })
     setShowReservationForm(true)
   }
@@ -163,7 +169,7 @@ const AdminDashboard = () => {
     setLoading(true)
 
     try {
-      await api.put(`/tables/${editingTable._id}`, tableForm)
+      await api.put(`/tables/${editingTable?._id}`, tableForm)
       addToast('Table updated successfully!', 'success')
       setEditingTable(null)
       setShowTableForm(false)
@@ -405,8 +411,8 @@ const AdminDashboard = () => {
                             >
                               <option value="">Select a table</option>
                               {tables.map(table => (
-                                <option key={table._id} value={table._id}>
-                                  Table {table.tableNumber} (Capacity: {table.capacity})
+                                <option key={table?._id} value={table?._id}>
+                                  Table {table?.tableNumber} (Capacity: {table?.capacity})
                                 </option>
                               ))}
                             </select>
@@ -503,7 +509,7 @@ const AdminDashboard = () => {
                     })
                     .map((reservation, index) => (
                     <motion.div
-                      key={reservation._id}
+                      key={reservation?._id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
@@ -516,7 +522,7 @@ const AdminDashboard = () => {
                                 {reservation.status}
                               </Badge>
                               <span className="text-sm text-slate-500">
-                                #{reservation._id.slice(-6)}
+                                #{reservation?._id?.slice(-6) || 'N/A'}
                               </span>
                             </div>
                             <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 text-sm">
@@ -566,7 +572,7 @@ const AdminDashboard = () => {
                             <Button
                               variant="danger"
                               size="sm"
-                              onClick={() => setConfirmCancel(reservation._id)}
+                              onClick={() => setConfirmCancel(reservation?._id)}
                             >
                               Cancel
                             </Button>
@@ -685,7 +691,7 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {tables.map((table, index) => (
                     <motion.div
-                      key={table._id}
+                      key={table?._id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
@@ -719,7 +725,7 @@ const AdminDashboard = () => {
                           <Button
                             variant="danger"
                             size="sm"
-                            onClick={() => setConfirmDelete(table._id)}
+                            onClick={() => setConfirmDelete(table?._id)}
                           >
                             <X className="h-4 w-4" />
                           </Button>

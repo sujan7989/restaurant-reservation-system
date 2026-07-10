@@ -76,6 +76,12 @@ const CustomerDashboard = () => {
 
   const handleCreateReservation = async (e) => {
     e.preventDefault()
+    
+    if (!formData.tableId) {
+      addToast('Please select a table', 'warning')
+      return
+    }
+    
     setLoading(true)
 
     try {
@@ -308,8 +314,8 @@ const CustomerDashboard = () => {
                       >
                         <option value="">Select a table</option>
                         {availableTables.map(table => (
-                          <option key={table._id} value={table._id}>
-                            Table {table.tableNumber} (Capacity: {table.capacity}) - {table.location}
+                          <option key={table?._id} value={table?._id}>
+                            Table {table?.tableNumber} (Capacity: {table?.capacity}) - {table?.location || 'N/A'}
                           </option>
                         ))}
                       </select>
@@ -349,7 +355,7 @@ const CustomerDashboard = () => {
           <div className="grid gap-4">
             {reservations.map((reservation, index) => (
               <motion.div
-                key={reservation._id}
+                key={reservation?._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -362,7 +368,7 @@ const CustomerDashboard = () => {
                           {reservation.status}
                         </Badge>
                         <span className="text-sm text-slate-500">
-                          #{reservation._id.slice(-6)}
+                          #{reservation?._id?.slice(-6) || 'N/A'}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
@@ -398,7 +404,7 @@ const CustomerDashboard = () => {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => setConfirmCancel(reservation._id)}
+                      onClick={() => setConfirmCancel(reservation?._id)}
                     >
                       Cancel
                     </Button>
