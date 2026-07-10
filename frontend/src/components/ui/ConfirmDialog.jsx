@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { AlertTriangle } from 'lucide-react'
 import Button from './Button'
 
-const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', variant = 'danger' }) => {
+const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', variant = 'danger', loading = false }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -51,10 +51,10 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText
             </div>
             <p className="text-slate-600 mb-6">{message}</p>
             <div className="flex gap-3 justify-end">
-              <Button variant="ghost" onClick={onClose}>
+              <Button variant="ghost" onClick={onClose} disabled={loading}>
                 {cancelText}
               </Button>
-              <Button variant={variant} onClick={onConfirm}>
+              <Button variant={variant} onClick={onConfirm} loading={loading}>
                 {confirmText}
               </Button>
             </div>

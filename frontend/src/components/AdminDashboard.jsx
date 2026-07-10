@@ -24,6 +24,8 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [loading, setLoading] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [confirmCancel, setConfirmCancel] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(null)
   const { user, logout } = useAuth()
@@ -117,6 +119,13 @@ const AdminDashboard = () => {
   }
 
   const handleCancelReservation = async (reservationId) => {
+    if (!reservationId) {
+      addToast('Invalid reservation ID', 'error')
+      setConfirmCancel(null)
+      return
+    }
+
+    setCancelling(true)
     try {
       await api.delete(`/reservations/${reservationId}`)
       addToast('Reservation cancelled successfully', 'success')
@@ -133,6 +142,9 @@ const AdminDashboard = () => {
       } else {
         addToast(message, 'error')
       }
+      setConfirmCancel(null)
+    } finally {
+      setCancelling(false)
     }
   }
 
@@ -750,6 +762,7 @@ const AdminDashboard = () => {
         confirmText="Yes, Cancel"
         cancelText="No, Keep It"
         variant="danger"
+        loading={cancelling}
       />
 
       {/* Confirm Delete Dialog */}

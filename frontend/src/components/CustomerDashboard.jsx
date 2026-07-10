@@ -19,6 +19,7 @@ const CustomerDashboard = () => {
   const [availableTables, setAvailableTables] = useState([])
   const [loading, setLoading] = useState(false)
   const [checkingAvailability, setCheckingAvailability] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
   const [confirmCancel, setConfirmCancel] = useState(null)
   const [formData, setFormData] = useState({
     date: '',
@@ -99,6 +100,13 @@ const CustomerDashboard = () => {
   }
 
   const handleCancelReservation = async (reservationId) => {
+    if (!reservationId) {
+      addToast('Invalid reservation ID', 'error')
+      setConfirmCancel(null)
+      return
+    }
+
+    setCancelling(true)
     try {
       await api.delete(`/reservations/${reservationId}`)
       addToast('Reservation cancelled successfully', 'success')
@@ -115,6 +123,9 @@ const CustomerDashboard = () => {
       } else {
         addToast(message, 'error')
       }
+      setConfirmCancel(null)
+    } finally {
+      setCancelling(false)
     }
   }
 
@@ -426,6 +437,7 @@ const CustomerDashboard = () => {
         confirmText="Yes, Cancel"
         cancelText="No, Keep It"
         variant="danger"
+        loading={cancelling}
       />
     </div>
   )
