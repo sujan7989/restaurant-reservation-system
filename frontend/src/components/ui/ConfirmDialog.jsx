@@ -4,6 +4,8 @@ import { AlertTriangle } from 'lucide-react'
 import Button from './Button'
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', variant = 'danger', loading = false }) => {
+  console.log('[DEBUG] ConfirmDialog rendered with isOpen:', isOpen, 'onConfirm:', typeof onConfirm, 'loading:', loading)
+  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -54,7 +56,14 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText
               <Button variant="ghost" onClick={onClose} disabled={loading}>
                 {cancelText}
               </Button>
-              <Button variant={variant} onClick={onConfirm} loading={loading}>
+              <Button 
+                variant={variant} 
+                onClick={() => {
+                  console.log('[DEBUG] Confirm button clicked, calling onConfirm')
+                  onConfirm()
+                }} 
+                loading={loading}
+              >
                 {confirmText}
               </Button>
             </div>

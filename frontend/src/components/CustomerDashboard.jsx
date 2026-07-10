@@ -100,19 +100,26 @@ const CustomerDashboard = () => {
   }
 
   const handleCancelReservation = async (reservationId) => {
+    console.log('[DEBUG] handleCancelReservation entered with reservationId:', reservationId)
+    
     if (!reservationId) {
+      console.log('[DEBUG] Invalid reservation ID, returning')
       addToast('Invalid reservation ID', 'error')
       setConfirmCancel(null)
       return
     }
 
+    console.log('[DEBUG] Setting cancelling to true')
     setCancelling(true)
     try {
+      console.log('[DEBUG] About to call axios.delete with URL:', `/reservations/${reservationId}`)
       await api.delete(`/reservations/${reservationId}`)
+      console.log('[DEBUG] axios.delete succeeded')
       addToast('Reservation cancelled successfully', 'success')
       setConfirmCancel(null)
       fetchReservations()
     } catch (err) {
+      console.log('[DEBUG] axios.delete failed with error:', err)
       const message = err.response?.data?.message || 'Failed to cancel reservation'
       if (err.response?.status === 409) {
         addToast(message, 'warning')
@@ -125,6 +132,7 @@ const CustomerDashboard = () => {
       }
       setConfirmCancel(null)
     } finally {
+      console.log('[DEBUG] Setting cancelling to false')
       setCancelling(false)
     }
   }
@@ -415,7 +423,10 @@ const CustomerDashboard = () => {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => setConfirmCancel(reservation?._id)}
+                      onClick={() => {
+                        console.log('[DEBUG] Cancel button clicked for reservation:', reservation?._id)
+                        setConfirmCancel(reservation?._id)
+                      }}
                     >
                       Cancel
                     </Button>
