@@ -30,10 +30,6 @@ const CustomerDashboard = () => {
   const { addToast } = useToast()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    fetchReservations()
-  }, [])
-
   const fetchReservations = async () => {
     setLoading(true)
     try {
@@ -41,13 +37,19 @@ const CustomerDashboard = () => {
       const response = await axios.get('/api/reservations', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      setReservations(response.data.reservations)
+      setReservations(response.data.reservations || [])
     } catch (err) {
+      console.error('Fetch reservations error:', err)
       addToast('Failed to fetch reservations', 'error')
+      setReservations([])
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchReservations()
+  }, [])
 
   const checkAvailability = async () => {
     if (!formData.date || !formData.timeSlot || !formData.numberOfGuests) {

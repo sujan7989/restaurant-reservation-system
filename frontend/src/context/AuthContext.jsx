@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
         .then(response => {
           setUser(response.data.user)
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error('Auth check failed:', err)
           localStorage.removeItem('token')
         })
         .finally(() => {

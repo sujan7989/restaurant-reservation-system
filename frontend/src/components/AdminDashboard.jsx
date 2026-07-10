@@ -43,11 +43,6 @@ const AdminDashboard = () => {
     location: ''
   })
 
-  useEffect(() => {
-    fetchReservations()
-    fetchTables()
-  }, [filterDate])
-
   const fetchReservations = async () => {
     setLoading(true)
     try {
@@ -57,9 +52,11 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
         params
       })
-      setReservations(response.data.reservations)
+      setReservations(response.data.reservations || [])
     } catch (err) {
+      console.error('Fetch reservations error:', err)
       addToast('Failed to fetch reservations', 'error')
+      setReservations([])
     } finally {
       setLoading(false)
     }
@@ -72,13 +69,20 @@ const AdminDashboard = () => {
       const response = await axios.get('/api/tables', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      setTables(response.data.tables)
+      setTables(response.data.tables || [])
     } catch (err) {
+      console.error('Fetch tables error:', err)
       addToast('Failed to fetch tables', 'error')
+      setTables([])
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchReservations()
+    fetchTables()
+  }, [filterDate])
 
   const handleCreateReservation = async (e) => {
     e.preventDefault()
