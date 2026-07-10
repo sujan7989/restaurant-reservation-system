@@ -274,10 +274,22 @@ router.put('/:id', protect, authorize('admin'), [
 // @access  Private
 router.delete('/:id', protect, async (req, res) => {
   try {
-    const reservation = await Reservation.findById(req.params.id);
+    const { id } = req.params;
+
+    // Validate ObjectId format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid reservation ID format' });
+    }
+
+    const reservation = await Reservation.findById(id);
 
     if (!reservation) {
       return res.status(404).json({ message: 'Reservation not found' });
+    }
+
+    // Check if already cancelled
+    if (reservation.status === 'cancelled') {
+      return res.status(409).json({ message: 'Reservation is already cancelled' });
     }
 
     // Check ownership or admin access
@@ -289,12 +301,11 @@ router.delete('/:id', protect, async (req, res) => {
     reservation.status = 'cancelled';
     await reservation.save();
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: 'Reservation cancelled successfully'
     });
   } catch (error) {
-    console.error('Cancel reservation error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

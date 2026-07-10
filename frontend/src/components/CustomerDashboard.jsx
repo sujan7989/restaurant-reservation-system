@@ -99,7 +99,16 @@ const CustomerDashboard = () => {
       setConfirmCancel(null)
       fetchReservations()
     } catch (err) {
-      addToast('Failed to cancel reservation', 'error')
+      const message = err.response?.data?.message || 'Failed to cancel reservation'
+      if (err.response?.status === 409) {
+        addToast(message, 'warning')
+      } else if (err.response?.status === 403) {
+        addToast(message, 'error')
+      } else if (err.response?.status === 404) {
+        addToast(message, 'error')
+      } else {
+        addToast(message, 'error')
+      }
     }
   }
 
