@@ -50,7 +50,6 @@ const AdminDashboard = () => {
       const response = await api.get('/reservations', { params })
       setReservations(response.data.reservations || [])
     } catch (err) {
-      console.error('Fetch reservations error:', err)
       addToast('Failed to fetch reservations', 'error')
       setReservations([])
     } finally {
@@ -64,7 +63,6 @@ const AdminDashboard = () => {
       const response = await api.get('/tables')
       setTables(response.data.tables || [])
     } catch (err) {
-      console.error('Fetch tables error:', err)
       addToast('Failed to fetch tables', 'error')
       setTables([])
     } finally {

@@ -41,7 +41,6 @@ const findAvailableTables = async (date, timeSlot, numberOfGuests) => {
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
-    console.log('GET /api/reservations - User:', req.user.id, 'Role:', req.user.role, 'Query:', req.query);
     let reservations;
 
     if (req.user.role === 'admin') {
@@ -52,7 +51,6 @@ router.get('/', protect, async (req, res) => {
       if (date) {
         const parsedDate = new Date(date);
         if (isNaN(parsedDate.getTime())) {
-          console.error('Invalid date format:', date);
           return res.status(400).json({ message: 'Invalid date format' });
         }
         query.date = parsedDate;
@@ -71,14 +69,12 @@ router.get('/', protect, async (req, res) => {
         .sort({ date: 1, timeSlot: 1 });
     }
 
-    console.log('Found reservations:', reservations.length);
     res.json({
       success: true,
       count: reservations.length,
       reservations
     });
   } catch (error) {
-    console.error('Get reservations error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -104,7 +100,6 @@ router.get('/available', protect, async (req, res) => {
       availableTables
     });
   } catch (error) {
-    console.error('Get available tables error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -165,7 +160,6 @@ router.post('/', protect, [
       reservation: populatedReservation
     });
   } catch (error) {
-    console.error('Create reservation error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -193,7 +187,6 @@ router.get('/:id', protect, async (req, res) => {
       reservation
     });
   } catch (error) {
-    console.error('Get reservation error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -272,7 +265,6 @@ router.put('/:id', protect, authorize('admin'), [
       reservation: updatedReservation
     });
   } catch (error) {
-    console.error('Update reservation error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -283,12 +275,12 @@ router.put('/:id', protect, authorize('admin'), [
 router.delete('/:id', protect, async (req, res) => {
   try {
     const reservation = await Reservation.findById(req.params.id);
-    
+
     if (!reservation) {
       return res.status(404).json({ message: 'Reservation not found' });
     }
 
-    // Check owndership or admin access
+    // Check ownership or admin access
     if (req.user.role !== 'admin' && reservation.user.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to cancel this reservation' });
     }

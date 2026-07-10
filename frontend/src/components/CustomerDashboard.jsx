@@ -36,7 +36,6 @@ const CustomerDashboard = () => {
       const response = await api.get('/reservations')
       setReservations(response.data.reservations || [])
     } catch (err) {
-      console.error('Fetch reservations error:', err)
       addToast('Failed to fetch reservations', 'error')
       setReservations([])
     } finally {
@@ -68,7 +67,6 @@ const CustomerDashboard = () => {
         addToast('No tables available for the selected date and time', 'warning')
       }
     } catch (err) {
-      console.error('Check availability error:', err)
       addToast('Failed to check availability', 'error')
       setAvailableTables([])
     } finally {

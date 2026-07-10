@@ -17,7 +17,6 @@ router.get('/', protect, async (req, res) => {
       tables
     });
   } catch (error) {
-    console.error('Get tables error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -28,17 +27,16 @@ router.get('/', protect, async (req, res) => {
 router.get('/:id', protect, async (req, res) => {
   try {
     const table = await Table.findById(req.params.id);
-    
+
     if (!table) {
       return res.status(404).json({ message: 'Table not found' });
     }
-    
+
     res.json({
       success: true,
       table
     });
   } catch (error) {
-    console.error('Get table error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -75,7 +73,6 @@ router.post('/', protect, authorize('admin'), [
       table
     });
   } catch (error) {
-    console.error('Create table error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -117,7 +114,6 @@ router.put('/:id', protect, authorize('admin'), [
       table: updatedTable
     });
   } catch (error) {
-    console.error('Update table error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -128,7 +124,7 @@ router.put('/:id', protect, authorize('admin'), [
 router.delete('/:id', protect, authorize('admin'), async (req, res) => {
   try {
     const table = await Table.findById(req.params.id);
-    
+
     if (!table) {
       return res.status(404).json({ message: 'Table not found' });
     }
@@ -140,7 +136,6 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
       message: 'Table deleted successfully'
     });
   } catch (error) {
-    console.error('Delete table error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
