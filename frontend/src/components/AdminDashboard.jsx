@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import axios from 'axios'
+import api from '../utils/axios'
 import Card from './ui/Card'
 import Button from './ui/Button'
 import Input from './ui/Input'
@@ -46,12 +46,8 @@ const AdminDashboard = () => {
   const fetchReservations = async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
       const params = filterDate ? { date: filterDate } : {}
-      const response = await axios.get('/api/reservations', {
-        headers: { Authorization: `Bearer ${token}` },
-        params
-      })
+      const response = await api.get('/reservations', { params })
       setReservations(response.data.reservations || [])
     } catch (err) {
       console.error('Fetch reservations error:', err)
@@ -65,10 +61,7 @@ const AdminDashboard = () => {
   const fetchTables = async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await axios.get('/api/tables', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const response = await api.get('/tables')
       setTables(response.data.tables || [])
     } catch (err) {
       console.error('Fetch tables error:', err)
@@ -89,10 +82,7 @@ const AdminDashboard = () => {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
-      await axios.post('/api/reservations', reservationForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.post('/reservations', reservationForm)
       addToast('Reservation created successfully!', 'success')
       setShowReservationForm(false)
       setReservationForm({ tableId: '', date: '', timeSlot: '', numberOfGuests: '' })
@@ -109,10 +99,7 @@ const AdminDashboard = () => {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
-      await axios.put(`/api/reservations/${editingReservation._id}`, reservationForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.put(`/reservations/${editingReservation._id}`, reservationForm)
       addToast('Reservation updated successfully!', 'success')
       setEditingReservation(null)
       setShowReservationForm(false)
@@ -127,10 +114,7 @@ const AdminDashboard = () => {
 
   const handleCancelReservation = async (reservationId) => {
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/reservations/${reservationId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.delete(`/reservations/${reservationId}`)
       addToast('Reservation cancelled successfully', 'success')
       setConfirmCancel(null)
       fetchReservations()
@@ -155,10 +139,7 @@ const AdminDashboard = () => {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
-      await axios.post('/api/tables', tableForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.post('/tables', tableForm)
       addToast('Table created successfully!', 'success')
       setShowTableForm(false)
       setTableForm({ tableNumber: '', capacity: '', location: '' })
@@ -175,10 +156,7 @@ const AdminDashboard = () => {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
-      await axios.put(`/api/tables/${editingTable._id}`, tableForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.put(`/tables/${editingTable._id}`, tableForm)
       addToast('Table updated successfully!', 'success')
       setEditingTable(null)
       setShowTableForm(false)
@@ -193,10 +171,7 @@ const AdminDashboard = () => {
 
   const handleDeleteTable = async (tableId) => {
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/tables/${tableId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.delete(`/tables/${tableId}`)
       addToast('Table deleted successfully', 'success')
       setConfirmDelete(null)
       fetchTables()

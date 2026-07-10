@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import axios from 'axios'
+import api from '../utils/axios'
 import Card from './ui/Card'
 import Button from './ui/Button'
 import Input from './ui/Input'
@@ -33,10 +33,7 @@ const CustomerDashboard = () => {
   const fetchReservations = async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await axios.get('/api/reservations', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const response = await api.get('/reservations')
       setReservations(response.data.reservations || [])
     } catch (err) {
       console.error('Fetch reservations error:', err)
@@ -59,9 +56,7 @@ const CustomerDashboard = () => {
 
     setCheckingAvailability(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await axios.get('/api/reservations/available', {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await api.get('/reservations/available', {
         params: {
           date: formData.date,
           timeSlot: formData.timeSlot,
@@ -86,10 +81,7 @@ const CustomerDashboard = () => {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
-      await axios.post('/api/reservations', formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.post('/reservations', formData)
       addToast('Reservation created successfully!', 'success')
       setShowCreateForm(false)
       setFormData({ date: '', timeSlot: '', numberOfGuests: '', tableId: '' })
@@ -104,10 +96,7 @@ const CustomerDashboard = () => {
 
   const handleCancelReservation = async (reservationId) => {
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/reservations/${reservationId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.delete(`/reservations/${reservationId}`)
       addToast('Reservation cancelled successfully', 'success')
       setConfirmCancel(null)
       fetchReservations()
