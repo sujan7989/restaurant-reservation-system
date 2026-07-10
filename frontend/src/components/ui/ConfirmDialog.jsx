@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import { AlertTriangle } from 'lucide-react'
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', variant = 'danger', loading = false }) => {
-  console.log('[DEBUG] ConfirmDialog rendered with isOpen:', isOpen, 'onConfirm:', typeof onConfirm, 'loading:', loading)
-  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -54,10 +52,7 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText
           </button>
           <button
             type="button"
-            onClick={() => {
-              console.log('[DEBUG] Plain HTML confirm button clicked, calling onConfirm')
-              onConfirm()
-            }}
+            onClick={onConfirm}
             disabled={loading}
             className="px-4 py-2 text-base font-medium rounded-lg bg-error-600 text-white hover:bg-error-700 focus:outline-none focus:ring-2 focus:ring-error-500 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >

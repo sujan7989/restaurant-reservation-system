@@ -30,7 +30,7 @@ const findAvailableTables = async (date, timeSlot, numberOfGuests) => {
   }).distinct('table');
   
   const availableTables = suitableTables.filter(
-    table => !bookedTableIds.includes(table._id.toString())
+    table => !bookedTableIds.map(id => id.toString()).includes(table._id.toString())
   );
   
   return availableTables;

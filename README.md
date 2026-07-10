@@ -75,6 +75,7 @@ PORT=5000
 MONGODB_URI=mongodb://localhost:27017/restaurant-reservation
 JWT_SECRET=your_jwt_secret_key_here_change_in_production
 JWT_EXPIRE=7d
+FRONTEND_URL=http://localhost:3000
 ```
 
 4. Seed the database with initial data:
@@ -273,9 +274,9 @@ The application is designed to be deployed on platforms like:
 - **Frontend**: Vercel, Netlify, or served from the same backend
 
 For production deployment:
-1. Set environment variables for MongoDB URI and JWT secret
+1. Set environment variables for MongoDB URI, JWT secret, and FRONTEND_URL (your Vercel domain, e.g. `https://your-app.vercel.app`)
 2. Build the frontend: `npm run build`
-3. Configure CORS for production domains
+3. Configure CORS via the `FRONTEND_URL` environment variable on Render
 4. Use a production MongoDB instance (MongoDB Atlas recommended)
 
 ## License
