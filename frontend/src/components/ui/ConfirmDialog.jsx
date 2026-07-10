@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { AlertTriangle } from 'lucide-react'
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', variant = 'danger', loading = false }) => {
@@ -25,28 +26,28 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText
 
   if (!isOpen) return null
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.5)' }}
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 relative"
+        style={{ backgroundColor: 'white', borderRadius: '0.75rem', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', width: '100%', maxWidth: '28rem', padding: '1.5rem', position: 'relative' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 mb-4">
-          <div className={`p-3 rounded-full ${variant === 'danger' ? 'bg-error-100' : 'bg-warning-100'}`}>
-            <AlertTriangle className={`h-6 w-6 ${variant === 'danger' ? 'text-error-600' : 'text-warning-600'}`} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '9999px', backgroundColor: variant === 'danger' ? '#fee2e2' : '#fef3c7' }}>
+            <AlertTriangle style={{ width: '1.5rem', height: '1.5rem', color: variant === 'danger' ? '#dc2626' : '#d97706' }} />
           </div>
-          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#0f172a', margin: 0 }}>{title}</h3>
         </div>
-        <p className="text-slate-600 mb-6">{message}</p>
-        <div className="flex gap-3 justify-end">
+        <p style={{ color: '#475569', marginBottom: '1.5rem' }}>{message}</p>
+        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 text-base font-medium rounded-lg bg-transparent text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            style={{ padding: '0.5rem 1rem', fontSize: '1rem', fontWeight: 500, borderRadius: '0.5rem', background: 'transparent', color: '#334155', border: '1px solid #cbd5e1', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
           >
             {cancelText}
           </button>
@@ -54,13 +55,14 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className="px-4 py-2 text-base font-medium rounded-lg bg-error-600 text-white hover:bg-error-700 focus:outline-none focus:ring-2 focus:ring-error-500 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            style={{ padding: '0.5rem 1rem', fontSize: '1rem', fontWeight: 500, borderRadius: '0.5rem', backgroundColor: '#dc2626', color: 'white', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
           >
-            {confirmText}
+            {loading ? 'Please wait...' : confirmText}
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
