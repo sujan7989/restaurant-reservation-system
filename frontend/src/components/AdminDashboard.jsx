@@ -46,7 +46,7 @@ const AdminDashboard = () => {
   const fetchReservations = async () => {
     setLoading(true)
     try {
-      const params = filterDate ? { date: filterDate } : {}
+      const params = filterDate && filterDate.trim() ? { date: filterDate } : {}
       const response = await api.get('/reservations', { params })
       setReservations(response.data.reservations || [])
     } catch (err) {

@@ -41,30 +41,37 @@ const findAvailableTables = async (date, timeSlot, numberOfGuests) => {
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
+    console.log('GET /api/reservations - User:', req.user.id, 'Role:', req.user.role, 'Query:', req.query);
     let reservations;
-    
+
     if (req.user.role === 'admin') {
       // Admin can see all reservations (all statuses)
       const { date } = req.query;
       const query = {};
-      
+
       if (date) {
-        query.date = new Date(date);
+        const parsedDate = new Date(date);
+        if (isNaN(parsedDate.getTime())) {
+          console.error('Invalid date format:', date);
+          return res.status(400).json({ message: 'Invalid date format' });
+        }
+        query.date = parsedDate;
       }
-      
+
       reservations = await Reservation.find(query)
         .populate('user', 'name email')
         .populate('table', 'tableNumber capacity location')
         .sort({ date: 1, timeSlot: 1 });
     } else {
       // Customers can only see their own reservations (all statuses)
-      reservations = await Reservation.find({ 
+      reservations = await Reservation.find({
         user: req.user.id
       })
         .populate('table', 'tableNumber capacity location')
         .sort({ date: 1, timeSlot: 1 });
     }
-    
+
+    console.log('Found reservations:', reservations.length);
     res.json({
       success: true,
       count: reservations.length,
