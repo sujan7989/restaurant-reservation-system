@@ -4,3 +4,6 @@ dist/
 *.log
 .env.local
 .env.production.local
+
+.vercel
+.env*.local
