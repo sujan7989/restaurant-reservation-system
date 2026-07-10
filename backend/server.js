@@ -37,7 +37,7 @@ app.use('/api/tables', tableRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
+  res.json({ status: 'OK', message: 'Server is running', version: '1.0.0' });
 });
 
 // Error handling middleware
