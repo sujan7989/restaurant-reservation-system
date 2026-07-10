@@ -44,9 +44,9 @@ router.get('/', protect, async (req, res) => {
     let reservations;
     
     if (req.user.role === 'admin') {
-      // Admin can see all reservations
+      // Admin can see all reservations (all statuses)
       const { date } = req.query;
-      const query = { status: 'confirmed' };
+      const query = {};
       
       if (date) {
         query.date = new Date(date);
@@ -57,10 +57,9 @@ router.get('/', protect, async (req, res) => {
         .populate('table', 'tableNumber capacity location')
         .sort({ date: 1, timeSlot: 1 });
     } else {
-      // Customers can only see their own reservations
+      // Customers can only see their own reservations (all statuses)
       reservations = await Reservation.find({ 
-        user: req.user.id,
-        status: 'confirmed'
+        user: req.user.id
       })
         .populate('table', 'tableNumber capacity location')
         .sort({ date: 1, timeSlot: 1 });

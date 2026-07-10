@@ -61,9 +61,9 @@ const Login = () => {
     setLoading(true)
     
     try {
-      await login(formData.email, formData.password)
+      const response = await login(formData.email, formData.password)
       addToast('Login successful!', 'success')
-      navigate(formData.email.includes('admin') ? '/admin' : '/dashboard')
+      navigate(response.user.role === 'admin' ? '/admin' : '/dashboard')
     } catch (err) {
       addToast(err.response?.data?.message || 'Login failed', 'error')
     } finally {

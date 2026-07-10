@@ -75,9 +75,9 @@ const Register = () => {
     setLoading(true)
     
     try {
-      await register(formData.name, formData.email, formData.password)
+      const response = await register(formData.name, formData.email, formData.password)
       addToast('Registration successful!', 'success')
-      navigate('/dashboard')
+      navigate(response.user.role === 'admin' ? '/admin' : '/dashboard')
     } catch (err) {
       addToast(err.response?.data?.message || 'Registration failed', 'error')
     } finally {
