@@ -53,19 +53,25 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText
             </div>
             <p className="text-slate-600 mb-6">{message}</p>
             <div className="flex gap-3 justify-end">
-              <Button variant="ghost" onClick={onClose} disabled={loading}>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={loading}
+                className="px-4 py-2 text-base font-medium rounded-lg bg-transparent text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              >
                 {cancelText}
-              </Button>
-              <Button 
-                variant={variant} 
+              </button>
+              <button
+                type="button"
                 onClick={() => {
-                  console.log('[DEBUG] Confirm button clicked, calling onConfirm')
+                  console.log('[DEBUG] Native confirm button clicked, calling onConfirm')
                   onConfirm()
-                }} 
-                loading={loading}
+                }}
+                disabled={loading}
+                className="px-4 py-2 text-base font-medium rounded-lg bg-error-600 text-white hover:bg-error-700 focus:outline-none focus:ring-2 focus:ring-error-500 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {confirmText}
-              </Button>
+              </button>
             </div>
           </motion.div>
         </motion.div>
